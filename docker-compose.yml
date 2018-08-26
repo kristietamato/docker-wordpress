@@ -9,7 +9,7 @@ networks:
 services:
   mysql:
     build:
-      context: .
+      context: ./files
       dockerfile: Dockerfile.backend
     expose:
       - 3306
@@ -20,7 +20,7 @@ services:
       - mysql-mnt:/mnt
   wordpress:
     build:
-      context: .
+      context: ./files
       dockerfile: Dockerfile.frontend
     ports:
       - 8080:80
