@@ -4,7 +4,16 @@ set -e
 
 # initialize database if not already initialized
 if [ ! -d /var/lib/mysql/mysql ]; then
-  INITIAL_ROOT_PASSWORD="${INITIAL_ROOT_PASSWORD:-9A4A8178-02C7-455E-B38E-06A5669C8EC4}"
+  UUID_PASSWORD="$(uuidgen)"
+  INITIAL_ROOT_PASSWORD="${INITIAL_ROOT_PASSWORD:-$UUID_PASSWORD}"
+  if [ "$INITIAL_ROOT_PASSWORD" = "$UUID_PASSWORD" ]; then
+    # save the initial root password since it was generated
+    passfile=/mnt/mysql_pass
+    touch "$passfile"
+    chmod 600 "$passfile"
+    echo "$INITIAL_ROOT_PASSWORD" > "$passfile"
+    unset passfile
+  fi
   WORDPRESS_USER="${WORDPRESS_USER:-wordpress}"
   WORDPRESS_PASSWORD="${WORDPRESS_PASSWORD:-WordpressPassword}"
   /usr/libexec/mariadb-prepare-db-dir
