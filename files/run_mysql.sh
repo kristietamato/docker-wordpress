@@ -16,6 +16,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
   fi
   WORDPRESS_USER="${WORDPRESS_USER:-wordpress}"
   WORDPRESS_PASSWORD="${WORDPRESS_PASSWORD:-WordpressPassword}"
+  WORDPRESS_DATABASE="${WORDPRESS_DATABASE:-wordpress}"
   /usr/libexec/mariadb-prepare-db-dir
   /usr/bin/mysqld_safe --basedir=/usr &
   MYSQL_PID=$!
@@ -25,8 +26,8 @@ if [ ! -d /var/lib/mysql/mysql ]; then
   mysql -u root -p"$INITIAL_ROOT_PASSWORD" <<EOF
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '${INITIAL_ROOT_PASSWORD}' WITH GRANT OPTION;
 CREATE USER '${WORDPRESS_USER}'@'%' IDENTIFIED BY '${WORDPRESS_PASSWORD}';
-CREATE DATABASE wordpress;
-GRANT ALL PRIVILEGES ON wordpress.* TO '${WORDPRESS_USER}'@'%' IDENTIFIED BY '${WORDPRESS_PASSWORD}';
+CREATE DATABASE ${WORDPRESS_DATABASE};
+GRANT ALL PRIVILEGES ON ${WORDPRESS_DATABASE}.* TO '${WORDPRESS_USER}'@'%' IDENTIFIED BY '${WORDPRESS_PASSWORD}';
 EOF
   kill $(pgrep -P $MYSQL_PID)
   while pgrep -P $MYSQL_PID;do sleep 1;done
