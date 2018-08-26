@@ -1,0 +1,22 @@
+FROM centos:7
+
+RUN set -ex; \
+yum makecache fast; \
+yum install -y mariadb mariadb-server; \
+yum clean all; \
+rm -rf /tmp/* /var/cache/yum
+
+
+# install init process for handling shutdown
+RUN set -ex; \
+curl -Lo /bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64; \
+sha256sum -c - <<< "37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9  /bin/dumb-init"; \
+chmod 755 /bin/dumb-init
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+EXPOSE 3306
+
+ADD run_mysql.sh /
+
+CMD /run_mysql.sh
