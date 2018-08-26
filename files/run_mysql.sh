@@ -29,7 +29,6 @@ if [ ! -d /var/lib/mysql/mysql ]; then
   MYSQL_PID=$!
   /usr/libexec/mariadb-wait-ready $MYSQL_PID
   mysqladmin -u root password "$INITIAL_ROOT_PASSWORD"
-  mysql -u root -p"$INITIAL_ROOT_PASSWORD" <<< ""
   mysql -u root -p"$INITIAL_ROOT_PASSWORD" <<EOF
 CREATE USER '${WORDPRESS_USER}'@'%' IDENTIFIED BY '${WORDPRESS_PASSWORD}';
 CREATE DATABASE ${WORDPRESS_DATABASE};
