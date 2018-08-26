@@ -1,0 +1,15 @@
+FROM centos:7
+
+RUN set -ex; \
+yum makecache fast; \
+yum install -y httpd php php-mysql mariadb gettext rsync; \
+mkdir /usr/local/share/wordpress; \
+curl -L https://wordpress.org/latest.tar.gz | tar -xzC /usr/local/share/wordpress/ --strip-components 1; \
+yum clean all; \
+rm -rf /tmp/*
+
+EXPOSE 80
+
+ADD wp-config.php.tpl run_wordpress.sh /
+
+CMD /run_wordpress.sh

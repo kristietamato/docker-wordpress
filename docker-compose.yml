@@ -1,23 +1,31 @@
 version: '2.2'
+volumes:
+  password-mnt:
+  mysql-data:
+  wordpress-data:
 networks:
   internal:
     driver: bridge
 services:
   mysql:
     build:
-      context: .
+      context: ./files
       dockerfile: Dockerfile.backend
-    environment:
-      INITIAL_ROOT_PASSWORD: "%123wordpress"
     expose:
       - 3306
     networks:
       - internal
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - password-mnt:/mnt
   wordpress:
     build:
-      context: .
+      context: ./files
       dockerfile: Dockerfile.frontend
     ports:
-      - 8080:80
+      - localhost:8080:80
     networks:
       - internal
+    volumes:
+      - wordpress-data:/var/www/html
+      - password-mnt:/mnt
